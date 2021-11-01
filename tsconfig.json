@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "commonjs", // Compila pra commonjs (require) versão compatível com browsers
+    "target": "es2019",
+    "esModuleInterop": true,
+    "allowJs": true
+  }
+} // diretório onde os arquivos .js vão sair compilados
