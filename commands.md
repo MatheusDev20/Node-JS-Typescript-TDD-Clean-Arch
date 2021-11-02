@@ -8,5 +8,7 @@ Conventional Commits
   [optional body]
   [optional footer(s)]
 
+Juntar 2 commits git
+  git commit --amend --no-edit
 
 
