@@ -5,13 +5,26 @@ interface SutType {
   sut: SignUpController
   emailValidatorStub: EmailValidator
 }
-const makeSut = (): SutType => {
+const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid(email: string): boolean {
-      return false
+      return true
     }
   }
-  const emailValidatorStub = new EmailValidatorStub()
+
+  return new EmailValidatorStub()
+}
+const makeEmailValidatorError = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid(email: string): boolean {
+      throw new Error()
+    }
+  }
+
+  return new EmailValidatorStub()
+}
+const makeSut = (): SutType => {
+  const emailValidatorStub = makeEmailValidator()
   const sut = new SignUpController(emailValidatorStub)
 
   return {
@@ -106,12 +119,7 @@ test('Should call EmailValidator with correct email', () => {
   expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
 })
 test('Should Return 500 if an exception happen in EmailValidator', () => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid(email: string): boolean {
-      throw new Error('ops! an excpetion ocurred')
-    }
-  }
-  const emailValidatorStub = new EmailValidatorStub()
+  const emailValidatorStub = makeEmailValidatorError()
   const sut = new SignUpController(emailValidatorStub)
 
   const httpRequest = {
