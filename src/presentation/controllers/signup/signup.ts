@@ -32,9 +32,15 @@ export class SignUpController implements Controller {
         email,
         password
       })
+      const account = this.addAcount.add({
+        name,
+        email,
+        password
+      })
+
       return {
         statusCode: 200,
-        body: 'Success'
+        body: account
       }
     } catch (err) {
       return serverError()
