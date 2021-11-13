@@ -7,5 +7,5 @@ export interface AddAcountModel {
 } // Isso é equivalente a um DTO pra criação da conta.
 
 export interface AddAcount {
-  add: (account: AddAcountModel) => AccountModel
+  add: (account: AddAcountModel) => Promise<AccountModel>
 }

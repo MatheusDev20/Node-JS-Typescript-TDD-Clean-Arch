@@ -4,13 +4,14 @@ import { badRequest, serverError, ok } from '../../helpers/http-helpers'
 import { Controller, EmailValidator, HttpRequest, HttpResponse, AddAcount } from './signup-protocols'
 export class SignUpController implements Controller {
   private readonly emailValidator: EmailValidator
-  private readonly addAcount: AddAcount
+  private readonly addAcountUseCase: AddAcount
+
   constructor(emailValidator: EmailValidator, addAcount: AddAcount) {
     this.emailValidator = emailValidator
-    this.addAcount = addAcount
+    this.addAcountUseCase = addAcount
   }
 
-  handle(httpRequest: HttpRequest): HttpResponse {
+  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const requiredFields = ['name', 'email', 'password', 'passwordConfirmation']
       for (const field of requiredFields) {
@@ -27,16 +28,12 @@ export class SignUpController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
-      this.addAcount.add({
+      const account = await this.addAcountUseCase.add({
         name,
         email,
         password
       })
-      const account = this.addAcount.add({
-        name,
-        email,
-        password
-      })
+
       return ok(account)
     } catch (err) {
       return serverError()
