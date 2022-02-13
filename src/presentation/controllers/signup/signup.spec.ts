@@ -147,7 +147,7 @@ test('Should Return 500 if an exception happen in EmailValidator', async () => {
   }
   const httpResponse = await sut.handle(httpRequest)
   expect(httpResponse.statusCode).toBe(500)
-  expect(httpResponse.body).toEqual(new ServerError())
+  expect(httpResponse.body).toEqual(new ServerError('Error Trace'))
 })
 
 test('Should Return 400 if password confirmation failed', async () => {
@@ -202,7 +202,7 @@ test('Should return 500 if add acount throws an exception', async () => {
   const httpResponse = await sut.handle(httpRequest)
   console.log(typeof (httpResponse))
   expect(httpResponse.statusCode).toBe(500)
-  expect(httpResponse.body).toEqual(new ServerError())
+  expect(httpResponse.body).toEqual(new ServerError('Error Trace'))
 })
 
 test('Should return 200 if valid data is passed', async () => {
