@@ -5,7 +5,7 @@ import { LogErrorRepository } from '../../data/protocols/log-error-repository'
 
 const makeLogErrorRepository = (): LogErrorRepository => {
   class LogErrorRepositoryStub implements LogErrorRepository {
-    async log(stack: string): Promise<void> {
+    async logError(stack: string): Promise<void> {
       return await new Promise(resolve => resolve())
     }
   }
@@ -76,7 +76,7 @@ describe('LogController Decorator', () => {
     fakeError.stack = 'any_stack'
     const error = serverError(fakeError)
 
-    const logSpy = jest.spyOn(logErrorStub, 'log')
+    const logSpy = jest.spyOn(logErrorStub, 'logError')
     // Simulando um erro no controller
     jest.spyOn(controllerStub, 'handle').mockReturnValueOnce(new Promise(resolve => resolve(error)))
 
