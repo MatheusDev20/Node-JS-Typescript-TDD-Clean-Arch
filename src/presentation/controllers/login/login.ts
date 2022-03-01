@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/return-await */
 /* eslint-disable no-multi-spaces */
-import { MissingParamError } from '../../errors'
+import { InvalidParamError, MissingParamError } from '../../errors'
 import { badRequest } from '../../helpers/http-helpers'
 import { HttpRequest, HttpResponse } from '../../protocols'
 import { Controller } from '../../protocols/controller'
@@ -13,13 +13,16 @@ export class LoginController implements Controller {
   }
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    if (!httpRequest.body.password) {
-      return new Promise(resolve => resolve(badRequest(new MissingParamError('password'))))
+    const requiredFields = ['email', 'password']
+    for (const field of requiredFields) {
+      if (!httpRequest.body[field]) {
+        return new Promise(resolve => resolve(badRequest(new MissingParamError(field))))
+      }
     }
-    if (!httpRequest.body.email) {
-      return new Promise(resolve => resolve(badRequest(new MissingParamError('email'))))
+    const { email } = httpRequest.body
+    if (!this.emailValidator.isValid(email)) {
+      return new Promise(resolve => resolve(badRequest(new InvalidParamError('email'))))
     }
-    this.emailValidator.isValid(httpRequest.body.email)
 
     return {
       statusCode: 200,
