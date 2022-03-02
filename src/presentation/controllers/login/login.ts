@@ -1,32 +1,40 @@
 /* eslint-disable @typescript-eslint/return-await */
 /* eslint-disable no-multi-spaces */
+import { Authentication } from '../../../domain/usecases/authentication'
 import { InvalidParamError, MissingParamError } from '../../errors'
-import { badRequest } from '../../helpers/http-helpers'
+import { badRequest, serverError } from '../../helpers/http-helpers'
 import { HttpRequest, HttpResponse } from '../../protocols'
 import { Controller } from '../../protocols/controller'
 import { EmailValidator } from '../signup/signup-protocols'
 
 export class LoginController implements Controller {
   private readonly emailValidator: EmailValidator
-  constructor(emailValidator: EmailValidator) {
+  private readonly authentication: Authentication
+
+  constructor(emailValidator: EmailValidator, authentication: Authentication) {
     this.emailValidator = emailValidator
+    this.authentication = authentication
   }
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const requiredFields = ['email', 'password']
-    for (const field of requiredFields) {
-      if (!httpRequest.body[field]) {
-        return new Promise(resolve => resolve(badRequest(new MissingParamError(field))))
+    try {
+      const requiredFields = ['email', 'password']
+      for (const field of requiredFields) {
+        if (!httpRequest.body[field]) {
+          return new Promise(resolve => resolve(badRequest(new MissingParamError(field))))
+        }
       }
-    }
-    const { email } = httpRequest.body
-    if (!this.emailValidator.isValid(email)) {
-      return new Promise(resolve => resolve(badRequest(new InvalidParamError('email'))))
-    }
-
-    return {
-      statusCode: 200,
-      body: {}
+      const { email, password } = httpRequest.body
+      if (!this.emailValidator.isValid(email)) {
+        return new Promise(resolve => resolve(badRequest(new InvalidParamError('email'))))
+      }
+      await this.authentication.auth(email, password)
+      return {
+        statusCode: 200,
+        body: {}
+      }
+    } catch (err) {
+      return serverError(err)
     }
   }
 }
