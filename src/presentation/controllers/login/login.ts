@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/return-await */
 /* eslint-disable no-multi-spaces */
-import { Authentication } from '../../../domain/usecases/authentication'
 import { InvalidParamError, MissingParamError } from '../../errors'
-import { badRequest, serverError, unauthorized } from '../../helpers/http-helpers'
-import { HttpRequest, HttpResponse } from '../../protocols'
-import { Controller } from '../../protocols/controller'
-import { EmailValidator } from '../signup/signup-protocols'
+import { badRequest, ok, serverError, unauthorized } from '../../helpers/http-helpers'
+import { HttpRequest, HttpResponse, Controller, EmailValidator, Authentication } from './login-protocols'
 
 export class LoginController implements Controller {
   private readonly emailValidator: EmailValidator
@@ -32,11 +29,7 @@ export class LoginController implements Controller {
       if (!accessToken) {
         return unauthorized()
       }
-
-      return {
-        statusCode: 200,
-        body: {}
-      }
+      return ok({ accessToken: 'any_token' })
     } catch (err) {
       return serverError(err)
     }
