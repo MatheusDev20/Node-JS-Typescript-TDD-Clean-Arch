@@ -2,7 +2,7 @@
 /* eslint-disable no-multi-spaces */
 import { Authentication } from '../../../domain/usecases/authentication'
 import { InvalidParamError, MissingParamError } from '../../errors'
-import { badRequest, serverError } from '../../helpers/http-helpers'
+import { badRequest, serverError, unauthorized } from '../../helpers/http-helpers'
 import { HttpRequest, HttpResponse } from '../../protocols'
 import { Controller } from '../../protocols/controller'
 import { EmailValidator } from '../signup/signup-protocols'
@@ -21,14 +21,18 @@ export class LoginController implements Controller {
       const requiredFields = ['email', 'password']
       for (const field of requiredFields) {
         if (!httpRequest.body[field]) {
-          return new Promise(resolve => resolve(badRequest(new MissingParamError(field))))
+          return badRequest(new MissingParamError(field))
         }
       }
       const { email, password } = httpRequest.body
       if (!this.emailValidator.isValid(email)) {
-        return new Promise(resolve => resolve(badRequest(new InvalidParamError('email'))))
+        return badRequest(new InvalidParamError('email'))
       }
-      await this.authentication.auth(email, password)
+      const accessToken = await this.authentication.auth(email, password)
+      if (!accessToken) {
+        return unauthorized()
+      }
+
       return {
         statusCode: 200,
         body: {}
