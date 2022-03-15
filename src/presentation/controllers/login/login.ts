@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/return-await */
 /* eslint-disable no-multi-spaces */
-import { badRequest, ok, serverError, unauthorized } from '../../helpers/http-helpers'
+import { badRequest, ok, serverError, unauthorized } from '../../helpers/http/http-helpers'
 import { Validation, HttpRequest, HttpResponse, Controller, Authentication } from './login-protocols'
 
 export class LoginController implements Controller {
@@ -19,7 +19,7 @@ export class LoginController implements Controller {
         return badRequest(error)
       }
       const { email, password } = httpRequest.body
-      const accessToken = await this.authentication.auth(email, password)
+      const accessToken = await this.authentication.auth({ email, password })
 
       if (!accessToken) {
         return unauthorized()
