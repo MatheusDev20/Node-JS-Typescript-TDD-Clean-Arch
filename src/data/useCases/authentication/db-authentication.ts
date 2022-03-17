@@ -1,24 +1,23 @@
 
 import { AuthenticationModel, Authentication } from '../../../domain/usecases/authentication'
-import { HashComparer } from '../../protocols/cryptograph/hash-compare'
-import { TokenGenerator } from '../../protocols/cryptograph/token-generator'
+import { Encrypter, HashComparer } from '../../protocols/cryptograph'
 import { LoadAccountByEmailRepository } from '../../protocols/db/load-account-repository'
 import { UpdateAccessTokenRepository } from '../../protocols/db/update-account-token-repository'
 export class DbAuthentication implements Authentication {
   private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository
   private readonly hashComparer: HashComparer
-  private readonly tokenGenerator: TokenGenerator
+  private readonly encrypt: Encrypter
   private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
 
   constructor(
     loadAccountByEmailRepository: LoadAccountByEmailRepository,
     hashComparer: HashComparer,
-    tokenGenerator: TokenGenerator,
+    encrypt: Encrypter,
     updateAccessTokenRepository: UpdateAccessTokenRepository
   ) {
     this.loadAccountByEmailRepository = loadAccountByEmailRepository
     this.hashComparer = hashComparer
-    this.tokenGenerator = tokenGenerator
+    this.encrypt = encrypt
     this.updateAccessTokenRepository = updateAccessTokenRepository
   }
 
@@ -27,7 +26,7 @@ export class DbAuthentication implements Authentication {
     if (account) {
       const isValid = await this.hashComparer.compare(authentication.password, account.password)
       if (isValid) {
-        const accessToken = await this.tokenGenerator.generate(account.id)
+        const accessToken = await this.encrypt.encrypt(account.id)
         await this.updateAccessTokenRepository.update(account.id, accessToken)
         return accessToken
       }
