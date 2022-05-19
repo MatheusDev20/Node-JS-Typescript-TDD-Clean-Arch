@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/return-await */
 /* eslint-disable no-multi-spaces */
 import { badRequest, ok, serverError, unauthorized } from '../../helpers/http/http-helpers'
-import { Validation, HttpRequest, HttpResponse, Controller, Authentication } from './login-protocols'
+import { Validation, HttpRequest, HttpResponse, Controller, Authentication } from './login-controller-protocols'
 
 export class LoginController implements Controller {
   private readonly authentication: Authentication
