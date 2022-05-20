@@ -51,5 +51,15 @@ describe('Login Routes', () => {
         })
         .expect(200)
     })
+
+    test('Should Return 401 on login with unauthorized credencials', async () => {
+      await request(app)
+        .post('/api/login')
+        .send({
+          email: 'matheusdev20@gmail.com',
+          password: '123'
+        })
+        .expect(401)
+    })
   })
 })
