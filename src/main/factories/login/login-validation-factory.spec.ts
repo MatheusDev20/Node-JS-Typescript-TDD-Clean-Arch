@@ -17,7 +17,7 @@ describe('Login Factory', () => {
   test('Should call ValidationComposite with all validations', () => {
     makeLoginValidation()
     expect(ValidationComposite).toHaveBeenCalledWith([
-      new RequiredFieldsValidation('name'),
+      new RequiredFieldsValidation('password'),
       new RequiredFieldsValidation('email'),
       new EmailValidation('email', makeEmailValidator())
     ])
