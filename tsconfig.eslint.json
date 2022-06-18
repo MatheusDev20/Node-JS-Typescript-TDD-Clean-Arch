@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [],
+} // diretório onde os arquivos .js vão sair compilados
