@@ -3,4 +3,5 @@ coverage
 *.pdf
 resources.txt
 tokengithub
-env
+.env
+commands.md
