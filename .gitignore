@@ -3,3 +3,4 @@ coverage
 *.pdf
 resources.txt
 tokengithub
+env
