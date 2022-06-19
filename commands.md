@@ -18,4 +18,10 @@ Introdução a Clean Arch
   Data
   Main
 
+Mongo Credentials
 
+node-js-admin
+HEaj26jqFHApbWZ9
+
+
+mongodb+srv://node-js-admin:<password>@node-js-clean-arch.dhwvh.mongodb.net/?retryWrites=true&w=majority
